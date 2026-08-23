@@ -25,38 +25,40 @@ public class Supplement {
     @Column(name="total_quantity", nullable = false)
     private int totalQuantity;
 
-    @Column(name="current_price", nullable=false)
-    private int currentPrice;
+    @Column(name="current_stock", nullable = false)
+    private int currentStock;
+
+    @Column(name="unopened_bottle_count", nullable=false)
+    private int unopenedBottleCount; //미개봉 수량
 
     @Column(name="serving_size", nullable = false)
     private int servingSize; //1회 섭취량
 
     @Column(name="servings_per_day", nullable=false)
-    private int servingsPerDay; //하루 섭취 횟쉬
-
-    @Column(name="current_stock", nullable = false)
-    private int currentStock;
+    private int servingsPerDay; //하루 섭취 횟수
 
     @Column(name="intake_schedule", nullable = false)
-    private String intakeSchedule;
+    private String intakeSchedule; //섭취일
+
+
 
     public Supplement(
             Long userId,
             String supplementName,
             int totalQuantity,
-            int currentPrice,
+            int currentStock,
+            int unopenedBottleCount,
             int servingSize,
             int servingsPerDay,
-            int currentStock,
             String intakeSchedule
     ){
         this.userId = userId;
         this.supplementName = supplementName;
         this.totalQuantity = totalQuantity;
-        this.currentPrice = currentPrice;
+        this.currentStock = currentStock;
         this.servingSize = servingSize;
         this.servingsPerDay = servingsPerDay;
-        this.currentStock = currentStock;
         this.intakeSchedule = intakeSchedule;
+        this.unopenedBottleCount = unopenedBottleCount;
     }
 }
