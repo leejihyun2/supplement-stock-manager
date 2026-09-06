@@ -61,4 +61,24 @@ public class Supplement {
         this.intakeSchedule = intakeSchedule;
         this.unopenedBottleCount = unopenedBottleCount;
     }
+
+    //영양제의 기본 정보를 수정한다
+    //엔티티의 상태 변경을 엔티티 내부에서 처리하여 setter를 외부에 공개하지 않도록 한다
+    public void update(
+            String suppplementName,
+            Integer totalQuantity,
+            Integer servingSize,
+            Integer unopenedBottleCount,
+            Integer servingsPerDay,
+            Integer currentStock,
+            String intakeSchedule
+    ){
+        this.supplementName = suppplementName;
+        this.totalQuantity = totalQuantity;
+        this.servingSize = servingSize;
+        this.unopenedBottleCount = unopenedBottleCount;
+        this.servingsPerDay = servingsPerDay;
+        this.currentStock = currentStock;
+        this.intakeSchedule = intakeSchedule;
+    }
 }
