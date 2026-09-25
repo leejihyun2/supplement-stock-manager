@@ -155,4 +155,42 @@ public class SupplementService {
         //2. 조회된 영양제를 DB에서 삭제한다
         supplementRepository.delete(supplement);
     }
+
+    //영양제 재입고 등록(새 통 시작)
+    /*
+        1. 사용자의 영양제를 조회한다
+        2. 현재 개수를 총 개수로 변경한다
+        3. 변경된 결과를 Response DTO로 반환한다
+     */
+    @Transactional
+    public SupplementRestockResponse restockSupplement(Long supplementId){
+        //로그인 기능이 아직 없어 1로 고정
+        Long userId = 1L;
+
+        //해당 사용자의 영양제를 조회
+        Supplement supplement =
+                supplementRepository.findBySupplementIdAndUserId(
+                        supplementId,
+                        userId
+                ).orElseThrow(
+                        ()->new IllegalArgumentException("해당 영양제를 찾을 수 없습니다")
+                );
+
+        //현재 개수를 총 개수로 초기화
+        supplement.restock();
+
+        /*
+            supplementRepository.save(supplement)를 따로 호출하지 않아도 됨
+
+            @Teansactional 안에서 조회한 Supplement 엔티티는 JPA가 관리하고 있기 때문에 값이 변경되면
+            트랜잭션이 끝날 때 UPDATE 쿼리가 자동 실행됨
+            이것을 JPA의 Dirty Cheking(변경 감지)라고 한다
+         */
+
+        return new SupplementRestockResponse(
+                supplement.getSupplementId(),
+                supplement.getCurrentStock(),
+                "새 통 시작이 완료되었습니다"
+        );
+    }
 }

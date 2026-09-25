@@ -14,7 +14,7 @@ public interface SupplementRepository extends JpaRepository<Supplement, Long> {
     //정렬은 Repository에서 하지 않고 Service에서 한다 daysUntilDepletion이 계산값이기 때문이다
     List<Supplement> findAllByUserId(Long userId);
 
-    //틀정 사용자의 특정 영양제 조회
+    //특정 사용자의 특정 영양제 조회
     Optional<Supplement> findBySupplementIdAndUserId(Long suppelmentId, Long userId);
 
 }
