@@ -81,4 +81,9 @@ public class Supplement {
         this.currentStock = currentStock;
         this.intakeSchedule = intakeSchedule;
     }
+
+    //새 통 시작: 새 영양제 통을 개봉하면 현재 남은 개수를 한 통의 총 개수로 초기화한다
+    public void restock(){
+        this.currentStock = this.totalQuantity;
+    }
 }

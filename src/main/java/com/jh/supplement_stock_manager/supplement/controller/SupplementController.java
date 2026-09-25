@@ -77,4 +77,19 @@ public class SupplementController {
         return ResponseEntity.ok(response);
     }
 
+    /*
+        새 통 시작 API
+        POST /supplements/{supplementId]/restock
+
+        supplementId만 있으면 어떤 영양제를 새 통으로 시작할지 알 수 있기 때문에
+        Reqeust Body는 필요없다
+    */
+    @PostMapping("/{supplementId}/restock")
+    public ResponseEntity<SupplementRestockResponse> restockSupplement(
+            @PathVariable Long supplementId
+    ){
+        SupplementRestockResponse response = supplementService.restockSupplement(supplementId);
+        return ResponseEntity.ok(response);
+    }
+
 }
