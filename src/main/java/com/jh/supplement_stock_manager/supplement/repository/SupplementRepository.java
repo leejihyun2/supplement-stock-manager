@@ -17,6 +17,7 @@ public interface SupplementRepository extends JpaRepository<Supplement, Long> {
     //특정 사용자의 특정 영양제 조회
     Optional<Supplement> findBySupplementIdAndUserId(Long suppelmentId, Long userId);
 
+
 }
 
 //Repository: 엔티티를 이용해서 DB의 데이터를 저장,조회,수정,삭제할 수 있도록 JPA와 연결해주는 계층
