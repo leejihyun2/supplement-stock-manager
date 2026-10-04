@@ -52,4 +52,23 @@ public class IntakeRecord {
     @Enumerated(EnumType.STRING)
     @Column(name="intake_status", nullable=false)
     private IntakeStatus intakeStatus;
+
+    /*
+        최초 복용 체크 시 사용하는 생성자
+        Controller 나 Service에서 필드 하나하나를 직접 넣기보다 Entity가 자신의 생성 규칙을 담당하도록 한다
+     */
+    public IntakeRecord(
+            Long userId,
+            Long supplementId,
+            LocalDate intakeDate,
+            Integer intakeQuantity
+    ){
+        this.userId = userId;
+        this.supplementId = supplementId;
+        this.intakeDate = intakeDate;
+        this.intakeQuantity = intakeQuantity;
+
+        //최초 체크이므로 CHECKED 상태로 생성
+        this.intakeStatus = IntakeStatus.CHECKED;
+    }
 }

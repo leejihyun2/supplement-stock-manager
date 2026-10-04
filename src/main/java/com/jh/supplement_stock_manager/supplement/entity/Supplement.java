@@ -86,4 +86,12 @@ public class Supplement {
     public void restock(){
         this.currentStock = this.totalQuantity;
     }
+
+    //복용 수량만큼 현재 재고를 감소시킨다
+    public void decreaseStock(Integer quantity){
+        if(this.currentStock < quantity){
+            throw new IllegalStateException("영양제 재고가 부족합니다");
+        }
+        this.currentStock -= quantity;
+    }
 }
