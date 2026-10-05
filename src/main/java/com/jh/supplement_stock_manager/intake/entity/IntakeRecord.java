@@ -71,4 +71,13 @@ public class IntakeRecord {
         //최초 체크이므로 CHECKED 상태로 생성
         this.intakeStatus = IntakeStatus.CHECKED;
     }
+
+    /*
+        복용 상태를 변경한다
+        CHECKED -> UNCHECKED
+        UNCHECKED -> CHECKED
+     */
+    public void changeStatus(IntakeStatus status){
+        this.intakeStatus = status;
+    }
 }

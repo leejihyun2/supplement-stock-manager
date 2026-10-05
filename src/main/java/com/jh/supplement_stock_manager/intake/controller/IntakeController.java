@@ -1,9 +1,6 @@
 package com.jh.supplement_stock_manager.intake.controller;
 
-import com.jh.supplement_stock_manager.intake.dto.IntakeChecklistResponse;
-import com.jh.supplement_stock_manager.intake.dto.IntakeRecordCreateRequest;
-import com.jh.supplement_stock_manager.intake.dto.IntakeRecordCreateResponse;
-import com.jh.supplement_stock_manager.intake.service.IntakeRecordService;
+import com.jh.supplement_stock_manager.intake.dto.*;
 import com.jh.supplement_stock_manager.intake.service.IntakeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class IntakeController {
     private final IntakeService intakeService;
-    private final IntakeRecordService intakeRecordService;
+
 
     //오늘 복용 체크리스트 조회 API, 요청 예: GET /intake-checklist?date=2026-09-26
     @GetMapping("/intake-checklist")
@@ -37,7 +34,23 @@ public class IntakeController {
     public ResponseEntity<IntakeRecordCreateResponse> create(
             @Valid @RequestBody IntakeRecordCreateRequest request
     ){
-        IntakeRecordCreateResponse response = intakeRecordService.create(request);
+        IntakeRecordCreateResponse response = intakeService.create(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //복용 상태 변경 PATCH /intake-record/{intakeId}
+    /*
+        CHECKED -> UNCHECKED : 복용 취소
+        UNCHECKED -> CHECKED : 다시 체크
+     */
+    @PatchMapping("/intake-records/{intakeId}")
+    public ResponseEntity<IntakeStatusUpdateResponse> updateIntakeStatus(
+            @PathVariable Long intakeId,
+            @Valid
+            @RequestBody IntakeStatusUpdateRequest request
+    ){
+        IntakeStatusUpdateResponse response = intakeService.updateIntakeStatus(intakeId,request);
 
         return ResponseEntity.ok(response);
     }
