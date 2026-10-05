@@ -94,4 +94,9 @@ public class Supplement {
         }
         this.currentStock -= quantity;
     }
+
+    //복용 체크 취소 시 재고를 복구한다
+    public void restoreStock(Integer quantity){
+        this.currentStock += quantity;
+    }
 }

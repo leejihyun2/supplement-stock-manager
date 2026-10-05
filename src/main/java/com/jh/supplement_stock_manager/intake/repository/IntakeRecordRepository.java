@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface IntakeRecordRepository extends JpaRepository<IntakeRecord,Long> {
     //특정 사용자의 특정 날짜 복용 기록을 모두 조회한다
@@ -23,6 +24,17 @@ public interface IntakeRecordRepository extends JpaRepository<IntakeRecord,Long>
             Long userId,
             Long supplementId,
             LocalDate intakeDate
+    );
+
+    /*
+     * 복용 상태 변경 시 사용
+     *
+     * intakeId에 해당하는 기록이면서
+     * 현재 사용자의 기록인지 함께 확인한다.
+     */
+    Optional<IntakeRecord> findByIntakeIdAndUserId(
+            Long intakeId,
+            Long userId
     );
 }
 
