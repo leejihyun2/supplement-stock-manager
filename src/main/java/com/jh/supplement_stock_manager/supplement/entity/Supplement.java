@@ -99,4 +99,9 @@ public class Supplement {
     public void restoreStock(Integer quantity){
         this.currentStock += quantity;
     }
+
+    //구매등록 시 구매수량만큼 미개봉 수량이 증가한다
+    public void increaseUnopenedBottleCount(Integer purchaseQuantity){
+        this.unopenedBottleCount += purchaseQuantity;
+    }
 }
