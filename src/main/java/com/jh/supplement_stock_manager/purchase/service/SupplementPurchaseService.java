@@ -4,10 +4,12 @@ import com.jh.supplement_stock_manager.purchase.dto.SupplementPurchaseCreateRequ
 import com.jh.supplement_stock_manager.purchase.dto.SupplementPurchaseCreateResponse;
 import com.jh.supplement_stock_manager.purchase.entity.SupplementPurchases;
 import com.jh.supplement_stock_manager.purchase.repository.SupplementPurchaseRepository;
+import com.jh.supplement_stock_manager.supplement.entity.Supplement;
 import com.jh.supplement_stock_manager.supplement.repository.SupplementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -22,13 +24,19 @@ public class SupplementPurchaseService {
     private final SupplementPurchaseRepository supplementPurchaseRepository;
     private final SupplementRepository supplementRepository;
 
+    //구매등록
+    @Transactional
     public SupplementPurchaseCreateResponse createPurchase(Long supplementId, SupplementPurchaseCreateRequest request){
-        //URL로 받은 supplementId가 실제로 존재하는지 확인한다
-        if(!supplementRepository.existsById(supplementId)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"존재하지 않는 영양제입니다.");
-        }
+        //1. 구매대상 영양제를 조회한다
+        //미개봉 수량을 변경해야 하므로 existsById()가 아니라 실제 Entity를 조회한다
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(()->new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "존재하지 않는 영양제입니다."
+                        )
+                );
 
-        //Request DTO의 데이터를 이용해 구매내역 Entity를 생성
+        //2. 구매내역 Entity 생성
         SupplementPurchases purchases = new SupplementPurchases(
                 MVP_USER_ID,
                 supplementId,
@@ -39,8 +47,11 @@ public class SupplementPurchaseService {
                 LocalDateTime.now()
         );
 
-        //생성한 구매내역을 supplement_purchases 테이블에 저장한다
+        //3. 구매내역 저장
         supplementPurchaseRepository.save(purchases);
+
+        //4. 구매 수량만큼 미개봉 수량 증가
+        supplement.increaseUnopenedBottleCount(request.purchaseQuantity());
 
         //구매등록 성공 응답을 Controller에 반환한다
         return new SupplementPurchaseCreateResponse("구매내역이 등록되었습니다");
