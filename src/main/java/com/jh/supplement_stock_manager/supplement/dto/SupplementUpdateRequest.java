@@ -17,7 +17,7 @@ public record SupplementUpdateRequest (
     //1회 섭취 시 먹는 개수
     @NotNull(message="1회 섭취량은 필수입니다")
     @Positive(message="1회 섭취량은 1개 이상이어야 합니다")
-    Integer servingsSize,
+    Integer servingSize,
 
     //아직 개봉하지 않은 영양제 통의 수
     @NotNull(message="미개봉 수량은 필수입니다")

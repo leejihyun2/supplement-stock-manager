@@ -12,7 +12,7 @@ public class SupplementListItemResponseDto {
     private Long supplementId;
 
     //영양제 이름
-    private String name;
+    private String supplementName;
 
     //현재 개수
     //?왜 int 아니고 Integer 일까
