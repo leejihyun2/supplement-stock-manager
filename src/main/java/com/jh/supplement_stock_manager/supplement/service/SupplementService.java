@@ -4,9 +4,11 @@ import com.jh.supplement_stock_manager.supplement.dto.*;
 import com.jh.supplement_stock_manager.supplement.entity.Supplement;
 import com.jh.supplement_stock_manager.supplement.exception.SupplementNotFoundException;
 import com.jh.supplement_stock_manager.supplement.repository.SupplementRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -125,7 +127,7 @@ public class SupplementService {
         supplement.update(
                 request.supplementName(),
                 request.totalQuantity(),
-                request.servingsSize(),
+                request.servingSize(),
                 request.unopenedBottleCount(),
                 request.servingsPerDay(),
                 request.currentStock(),
@@ -167,7 +169,7 @@ public class SupplementService {
         //로그인 기능이 아직 없어 1로 고정
         Long userId = 1L;
 
-        //해당 사용자의 영양제를 조회
+        //1. 해당 사용자의 영양제를 조회
         Supplement supplement =
                 supplementRepository.findBySupplementIdAndUserId(
                         supplementId,
@@ -176,8 +178,19 @@ public class SupplementService {
                         ()->new IllegalArgumentException("해당 영양제를 찾을 수 없습니다")
                 );
 
-        //현재 개수를 총 개수로 초기화
-        supplement.restock();
+        //2. 새 통 시작(재고 검증 및 변경은 엔티티에서 처리
+        try{
+            supplement.restock();
+        }catch(IllegalStateException e){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(),e);
+        }
+
+        //3. 결과 반환
+        return new SupplementRestockResponse(
+                supplement.getSupplementId(),
+                supplement.getCurrentStock(),
+                "새 통 시작이 완료되었습니다"
+        );
 
         /*
             supplementRepository.save(supplement)를 따로 호출하지 않아도 됨
@@ -187,10 +200,6 @@ public class SupplementService {
             이것을 JPA의 Dirty Cheking(변경 감지)라고 한다
          */
 
-        return new SupplementRestockResponse(
-                supplement.getSupplementId(),
-                supplement.getCurrentStock(),
-                "새 통 시작이 완료되었습니다"
-        );
+
     }
 }

@@ -82,9 +82,17 @@ public class Supplement {
         this.intakeSchedule = intakeSchedule;
     }
 
-    //새 통 시작: 새 영양제 통을 개봉하면 현재 남은 개수를 한 통의 총 개수로 초기화한다
+    //새 통 시작
     public void restock(){
-        this.currentStock = this.totalQuantity;
+        if(this.unopenedBottleCount<=0){
+            throw new IllegalStateException("미개봉 영양제가 없습니다");
+        }
+
+        //새 통 수량 추가
+        this.currentStock += this.totalQuantity;
+
+        //미개봉 수량 1개 감소
+        this.unopenedBottleCount--;
     }
 
     //복용 수량만큼 현재 재고를 감소시킨다
