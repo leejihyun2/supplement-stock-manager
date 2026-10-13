@@ -21,7 +21,7 @@ public class IntakeChecklistItemResponse {
     private Long intakeId;
 
     //영양제 이름
-    private String name;
+    private String supplementName;
 
     //현재 설정 기준 하루 복용량
     //servingSize x servingsPerDay
