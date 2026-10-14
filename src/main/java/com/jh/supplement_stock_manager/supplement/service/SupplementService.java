@@ -1,5 +1,8 @@
 package com.jh.supplement_stock_manager.supplement.service;
 
+import com.jh.supplement_stock_manager.intake.entity.IntakeStatus;
+import com.jh.supplement_stock_manager.purchase.entity.SupplementPurchases;
+import com.jh.supplement_stock_manager.purchase.repository.SupplementPurchaseRepository;
 import com.jh.supplement_stock_manager.supplement.dto.*;
 import com.jh.supplement_stock_manager.supplement.entity.Supplement;
 import com.jh.supplement_stock_manager.supplement.exception.SupplementNotFoundException;
@@ -13,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,8 @@ public class SupplementService {
     private final SupplementRepository supplementRepository;
 
     private final SupplementDepletionCalculator depletionCalculator;
+
+    private final SupplementPurchaseRepository supplementPurchaseRepository;
 
     //영양제 등록
     public SupplementCreateResponse createSupplement(
@@ -91,10 +97,14 @@ public class SupplementService {
         //4. 14일 이내면 현재 주문 추천 대상
         boolean includedInCurrentRecommendaion = daysUntilDepletion <=14;
 
-        //현재 구매내역 Repository까지 연결하지 않았다면 우선 null로 처리
-        //구매내역 조회 API를 연결하면 가장 최근 구매내역에서 가져오게 됨
-        Integer purchasePrice = null;
-        String purchaseSource = null;
+        //5.해당 영양제의 최신 구매내역 조회, 구매내역이 없는 경우 Optinal.empty()를 반환한다
+        Optional<SupplementPurchases> latestPurchase = supplementPurchaseRepository.findTopBySupplementIdAndUserIdOrderByPurchaseDateDescPurchaseIdDesc(
+                supplementId,MVP_USER_ID
+        );
+
+        //6.최신 구매내역에서 가격과 구매처 추출, 구매내역 없으면 null 반환
+        Integer purchasePrice = latestPurchase.map(SupplementPurchases::getPurchasePrice).orElse(null);
+        String purchaseSource = latestPurchase.map(SupplementPurchases::getPurchaseSource).orElse(null);
 
         //5.Entity + 계산값을 합쳐 Response DTO 생성
         return new SupplementDetailResponse(
