@@ -1,7 +1,9 @@
 package com.jh.supplement_stock_manager.purchase.controller;
 
+import com.jh.supplement_stock_manager.purchase.dto.OrderRecommendationResponse;
 import com.jh.supplement_stock_manager.purchase.dto.SupplementPurchaseCreateRequest;
 import com.jh.supplement_stock_manager.purchase.dto.SupplementPurchaseCreateResponse;
+import com.jh.supplement_stock_manager.purchase.service.OrderRecommendationService;
 import com.jh.supplement_stock_manager.purchase.service.SupplementPurchaseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SupplementPurchaseController {
     private final SupplementPurchaseService supplementPurchaseService;
+    private final OrderRecommendationService orderRecommendationService;
 
     //supplementId는 URL의 Path Variable를 통해 받는다
     //구매일자, 가격,구매처, 구매수량은 Reqeust Body(JSON)로 전달받는다
@@ -36,5 +39,16 @@ public class SupplementPurchaseController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    //2주 이내 소진 예정 목록 조회 API
+    //GET /order-recommendations
+    @GetMapping("/order-recommendations")
+    public ResponseEntity<OrderRecommendationResponse> getOrderRecommendations(){
+        //1.Service를 호출하여 주문 추천 목록 조회
+        OrderRecommendationResponse response = orderRecommendationService.getOrderRecommendations();
+
+        //2.HTTP 200 OK 와 조회 결과 반환
+        return ResponseEntity.ok(response);
     }
 }
