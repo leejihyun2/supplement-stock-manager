@@ -72,7 +72,7 @@ public class SupplementService {
                 //소진일이 빠른 영양제부터 보여줌
                 .sorted(
                         Comparator.comparingLong(
-                                SupplementListItemResponseDto::getDayUntilDepletion
+                                SupplementListItemResponseDto::getDaysUntilDepletion
                         )
                 )
                 .toList();
