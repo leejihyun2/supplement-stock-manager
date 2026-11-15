@@ -19,6 +19,6 @@ public class SupplementListItemResponseDto {
     private Integer currentStock;
 
     //예상 소진일까지 남은 일수
-    private Long dayUntilDepletion;
+    private Long daysUntilDepletion;
 
 }
